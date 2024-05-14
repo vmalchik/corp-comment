@@ -27,9 +27,8 @@ export default function FeedbackForm() {
         spellCheck="false"
         onChange={handleChange}
         maxLength={MAX_CHARACTERS}
-      >
-        {text}
-      </textarea>
+        value={text}
+      ></textarea>
       <label htmlFor="feedback-textarea">
         Enter your feedback here, remember to #hashtag the company
       </label>
