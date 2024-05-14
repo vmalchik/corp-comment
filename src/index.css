@@ -345,6 +345,7 @@ form button span::selection {
   border-bottom: 1px solid #e4e7eb;
   transition: all 0.2s;
   color: #3a3c42;
+  font-weight: 500;
 }
 
 .feedback--expand {
