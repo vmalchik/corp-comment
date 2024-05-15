@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import Container from "./layout/Container";
 import Footer from "./layout/Footer";
-import HashtagList from "./HashtagList";
+import HashtagList from "./hashtag/HashtagList";
 import { FeedbackItem } from "../lib/types";
-
-const getCompanyNameFromText = (text: string) => {
-  return text
-    .split(" ")
-    .find((word) => word.includes("#"))!
-    .substring(1);
-};
+import { getCompanyNameFromText } from "../lib/utils";
 
 function App() {
   const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // derived state
+  const companyNames = feedbackItems.map((item) => item.company);
+  const uniqueCompanyNames = Array.from(new Set(companyNames));
+
   const handleAddToDoList = async (text: string) => {
     setError(null);
     const newItem: FeedbackItem = {
@@ -106,7 +104,7 @@ function App() {
         isLoading={isLoading}
         error={error}
       />
-      <HashtagList />
+      <HashtagList companyNames={uniqueCompanyNames} />
     </div>
   );
 }
