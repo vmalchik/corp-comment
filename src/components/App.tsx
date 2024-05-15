@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Container from "./layout/Container";
 import Footer from "./layout/Footer";
 import HashtagList from "./hashtag/HashtagList";
@@ -11,12 +11,21 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
 
-  // derived state
-  const companyNames = feedbackItems.map((item) => item.company);
-  const uniqueCompanyNames = Array.from(new Set(companyNames));
-  const filteredFeedbackItems = selectedCompany
-    ? feedbackItems.filter((item) => item.company === selectedCompany)
-    : feedbackItems;
+  // derived state wrapped in useMemo for performance
+  const companyNames = useMemo(
+    () => feedbackItems.map((item) => item.company),
+    [feedbackItems]
+  );
+  const uniqueCompanyNames = useMemo(
+    () => Array.from(new Set(companyNames)),
+    [companyNames]
+  );
+  const filteredFeedbackItems = useMemo(() => {
+    const filtered = selectedCompany
+      ? feedbackItems.filter((item) => item.company === selectedCompany)
+      : feedbackItems;
+    return filtered;
+  }, [selectedCompany, feedbackItems]);
 
   const handleSelectedCompany = (companyName: string) => {
     setSelectedCompany(companyName);
