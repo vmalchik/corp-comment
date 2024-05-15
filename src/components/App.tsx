@@ -9,9 +9,18 @@ function App() {
   const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
+
   // derived state
   const companyNames = feedbackItems.map((item) => item.company);
   const uniqueCompanyNames = Array.from(new Set(companyNames));
+  const filteredFeedbackItems = selectedCompany
+    ? feedbackItems.filter((item) => item.company === selectedCompany)
+    : feedbackItems;
+
+  const handleSelectedCompany = (companyName: string) => {
+    setSelectedCompany(companyName);
+  };
 
   const handleAddToDoList = async (text: string) => {
     setError(null);
@@ -100,11 +109,14 @@ function App() {
       <Footer />
       <Container
         onAddToList={handleAddToDoList}
-        feedbackItems={feedbackItems}
+        feedbackItems={filteredFeedbackItems}
         isLoading={isLoading}
         error={error}
       />
-      <HashtagList companyNames={uniqueCompanyNames} />
+      <HashtagList
+        companyNames={uniqueCompanyNames}
+        onSelectedCompany={handleSelectedCompany}
+      />
     </div>
   );
 }
