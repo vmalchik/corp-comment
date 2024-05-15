@@ -8,22 +8,35 @@ type FeedbackItemProps = {
 
 export default function FeedbackItem({ feedbackItem }: FeedbackItemProps) {
   const { upvoteCount, badgeLetter, company, text, daysAgo } = feedbackItem;
+  const [count, setCount] = useState(upvoteCount);
   const [open, setOpen] = useState(false);
-  const handleClick = () => {
+
+  const handleOpen = () => {
     setOpen((prev) => !prev);
   };
+  const handleUpvote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    // prevent event bubbling from triggering handleOpen
+    e.stopPropagation();
+    setCount((prev) => prev + 1);
+    // disable the button by targeting element that contains the onClick event listener
+    e.currentTarget.disabled = true;
+  };
+
   return (
-    <li className={`feedback ${open ? "feedback--expand" : ""}`}>
-      <button>
+    <li
+      onClick={handleOpen}
+      className={`feedback ${open ? "feedback--expand" : ""}`}
+    >
+      <button onClick={handleUpvote}>
         <TriangleUpIcon />
-        <span>{upvoteCount}</span>
+        <span>{count}</span>
       </button>
 
       <div>
         <p>{badgeLetter}</p>
       </div>
 
-      <div onClick={handleClick}>
+      <div>
         <p>{company}</p>
         {/* Generate following in VSCode using lorem15 */}
         <p>{text}</p>
