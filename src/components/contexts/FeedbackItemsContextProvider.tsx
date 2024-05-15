@@ -1,7 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { FeedbackItem } from "../../lib/types";
 import { getCompanyNameFromText } from "../../lib/utils";
-import { FeedbackItemsContext } from "../../lib/hooks/useFeedbackItemsContext";
+import {
+  FeedbackItemsContext,
+  useFeedbackItems,
+} from "../../lib/hooks/useFeedbackItemsContext";
 
 type FeedbackItemsContextProviderProps = {
   children: React.ReactNode;
@@ -11,11 +14,9 @@ type FeedbackItemsContextProviderProps = {
 export default function FeedbackItemsContextProvider({
   children,
 }: FeedbackItemsContextProviderProps) {
-  const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<string | null>(null);
-
+  const { feedbackItems, isLoading, error, setFeedbackItems, setError } =
+    useFeedbackItems();
   // derived state wrapped in useMemo for performance
   const companyNames = useMemo(
     () => feedbackItems.map((item) => item.company),
@@ -72,52 +73,6 @@ export default function FeedbackItemsContextProvider({
       setFeedbackItems([...feedbackItems.slice(1)]);
     }
   };
-
-  useEffect(() => {
-    setError(null);
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks"
-        );
-        if (!response.ok) {
-          throw new Error();
-        }
-        const data = await response.json();
-        setFeedbackItems(data.feedbacks);
-      } catch {
-        setError("Error fetching feedbacks");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-  // alternative to async/await
-  // useEffect(() => {
-  //   setError(null);
-  //   setLoading(true);
-  //   fetch(
-  //     "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks"
-  //   ).then((response) => {
-  //     response
-  //       .json()
-  //       .then((data) => {
-  //         if (!response.ok) {
-  //           throw new Error();
-  //         }
-  //         setFeedbackItems(data.feedbacks);
-  //       })
-  //       .catch(() => {
-  //         // common causes: network error, not 2xx response, json parsing error
-  //         setError("Error fetching feedbacks");
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   });
-  // }, []);
 
   return (
     <FeedbackItemsContext.Provider
