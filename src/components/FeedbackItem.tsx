@@ -6,7 +6,7 @@ type FeedbackItemProps = {
 };
 
 export default function FeedbackItem({ feedbackItem }: FeedbackItemProps) {
-  const { upvoteCount, badgeLetter, companyName, text, daysAgo } = feedbackItem;
+  const { upvoteCount, badgeLetter, company, text, daysAgo } = feedbackItem;
   return (
     <li className="feedback">
       <button>
@@ -19,12 +19,12 @@ export default function FeedbackItem({ feedbackItem }: FeedbackItemProps) {
       </div>
 
       <div>
-        <p>{companyName}</p>
+        <p>{company}</p>
         {/* Generate following in VSCode using lorem15 */}
         <p>{text}</p>
       </div>
 
-      <p>{daysAgo}</p>
+      <p>{daysAgo === 0 ? "NEW" : `${daysAgo}d`}</p>
     </li>
   );
 }

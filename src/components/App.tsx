@@ -15,17 +15,42 @@ function App() {
   const [feedbackItems, setFeedbackItems] = useState<FeedbackItem[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const handleAddToDoList = (text: string) => {
+  const handleAddToDoList = async (text: string) => {
+    setError(null);
     const newItem: FeedbackItem = {
-      id: new Date().getTime(),
+      id: new Date().getTime(), // unique id based on timestamp OK for now
       upvoteCount: 0,
       badgeLetter: getCompanyNameFromText(text)[0]?.toUpperCase() || "",
-      companyName: getCompanyNameFromText(text),
+      company: getCompanyNameFromText(text),
       text,
       daysAgo: 0,
     };
+    // optimistic update
     setFeedbackItems([newItem, ...feedbackItems]);
+    // persist to server
+    try {
+      await fetch(
+        "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks",
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json", // what we accept in response
+            "Content-Type": "application/json", // what we send
+          },
+          body: JSON.stringify(newItem),
+        }
+      ).then((response) => {
+        if (!response.ok) {
+          throw new Error();
+        }
+      });
+    } catch {
+      setError("Error adding feedback");
+      // rollback
+      setFeedbackItems([...feedbackItems.slice(1)]);
+    }
   };
+
   useEffect(() => {
     setError(null);
     setLoading(true);
