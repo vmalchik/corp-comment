@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { MAX_CHARACTERS } from "../lib/constants";
 
+type FeedbackFormProps = {
+  onAddToList: (text: string) => void;
+};
+
 // Controlled input textarea
-export default function FeedbackForm() {
+export default function FeedbackForm({ onAddToList }: FeedbackFormProps) {
   const [text, setText] = useState("");
 
   const count = text.length;
@@ -19,8 +23,14 @@ export default function FeedbackForm() {
     setText(newText);
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // prevent page refresh
+    onAddToList(text);
+    setText("");
+  };
+
   return (
-    <form className="form">
+    <form onSubmit={handleSubmit} className="form">
       <textarea
         id="feedback-textarea"
         placeholder="" //  add empty placeholder to enable label visibility causing label to have 'present' attribute

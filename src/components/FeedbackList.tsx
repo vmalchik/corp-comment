@@ -1,84 +1,28 @@
-import { useEffect, useState } from "react";
 import FeedbackItem from "./FeedbackItem";
+import { FeedbackItem as TFeedbackItem } from "../lib/types";
 import Spinner from "./Spinner";
 import ErrorMessage from "./ErrorMessage";
-import { FeedbackItem as TFeedbackItem } from "../lib/types";
 
-const getCompanyNameFromText = (text: string) => {
-  return text
-    .split(" ")
-    .find((word) => word.includes("#"))!
-    .substring(1);
+type FeedbackListProps = {
+  feedbackItems: TFeedbackItem[];
+  isLoading: boolean;
+  error: string | null;
 };
 
-export default function FeedbackList() {
-  const [feedbackItems, setFeedbackItems] = useState<TFeedbackItem[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const handleAddToDoList = (text: string) => {
-    const newItem: TFeedbackItem = {
-      id: new Date().getTime(),
-      upvoteCount: 0,
-      badgeLetter: getCompanyNameFromText(text)[0]?.toUpperCase() || "",
-      companyName: getCompanyNameFromText(text),
-      text,
-      daysAgo: 0,
-    };
-    setFeedbackItems([...feedbackItems, newItem]);
-  };
-  useEffect(() => {
-    setError(null);
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks"
-        );
-        if (!response.ok) {
-          throw new Error();
-        }
-        const data = await response.json();
-        setFeedbackItems(data.feedbacks);
-      } catch {
-        setError("Error fetching feedbacks");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-  // alternative to async/await
-  // useEffect(() => {
-  //   setError(null);
-  //   setLoading(true);
-  //   fetch(
-  //     "https://bytegrad.com/course-assets/projects/corpcomment/api/feedbacks"
-  //   ).then((response) => {
-  //     response
-  //       .json()
-  //       .then((data) => {
-  //         if (!response.ok) {
-  //           throw new Error();
-  //         }
-  //         setFeedbackItems(data.feedbacks);
-  //       })
-  //       .catch(() => {
-  //         // common causes: network error, not 2xx response, json parsing error
-  //         setError("Error fetching feedbacks");
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   });
-  // }, []);
-
+export default function FeedbackList({
+  feedbackItems,
+  isLoading,
+  error,
+}: FeedbackListProps) {
   return (
-    <ol className="feedback-list">
-      {loading && <Spinner />}
+    <>
+      {isLoading && <Spinner />}
       {error && <ErrorMessage message={error} />}
-      {feedbackItems.map((feedbackItem) => (
-        <FeedbackItem key={feedbackItem.id} feedbackItem={feedbackItem} />
-      ))}
-    </ol>
+      <ol className="feedback-list">
+        {feedbackItems.map((feedbackItem) => (
+          <FeedbackItem key={feedbackItem.id} feedbackItem={feedbackItem} />
+        ))}
+      </ol>
+    </>
   );
 }
