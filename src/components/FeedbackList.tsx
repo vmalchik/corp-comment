@@ -4,11 +4,28 @@ import Spinner from "./Spinner";
 import ErrorMessage from "./ErrorMessage";
 import { FeedbackItem as TFeedbackItem } from "../lib/types";
 
+const getCompanyNameFromText = (text: string) => {
+  return text
+    .split(" ")
+    .find((word) => word.includes("#"))!
+    .substring(1);
+};
+
 export default function FeedbackList() {
   const [feedbackItems, setFeedbackItems] = useState<TFeedbackItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const handleAddToDoList = (text: string) => {
+    const newItem: TFeedbackItem = {
+      id: new Date().getTime(),
+      upvoteCount: 0,
+      badgeLetter: getCompanyNameFromText(text)[0]?.toUpperCase() || "",
+      companyName: getCompanyNameFromText(text),
+      text,
+      daysAgo: 0,
+    };
+    setFeedbackItems([...feedbackItems, newItem]);
+  };
   useEffect(() => {
     setError(null);
     setLoading(true);
