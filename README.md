@@ -20,11 +20,7 @@ _(Right-click and select "Open link in new tab" to watch the video in a new tab)
 
 ## Getting Started
 
-Prerequisites
-Ensure you have the following software installed:
-
-- Node.js (v14.x or higher)
-- npm (v6.x or higher) or yarn (v1.22.x or higher)
+Before you begin, ensure you have the latest version of Node.js installed. This project uses Node.js 20.x or later.
 
 ### Installation
 
