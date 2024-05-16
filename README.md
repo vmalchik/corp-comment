@@ -2,11 +2,7 @@
 
 This project is an application for writing feedback for companies in one central location with upvote capability. While the application does not actually post to social media, it showcases the potential for such functionality. The project is built using React, TypeScript, and Vite.
 
-<!-- [![Watch the video](app_preview.png)](https://youtu.be/htY2iL6a0D8) -->
-
-<a href="https://youtu.be/htY2iL6a0D8">
-    <img src="app_preview.png" alt="Watch the video" width="500" height="auto">
-</a>
+[![Watch the video](app_preview.png)](https://youtu.be/htY2iL6a0D8)
 
 _(Right-click and select "Open link in new tab" to watch the video in a new tab)_
 
